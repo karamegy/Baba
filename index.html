@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlobalTrade Architecture v10.0 - 2000+ Features Enterprise</title>
+
+  <!-- Bootstrap 5.3 RTL CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" id="bootstrap-css">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root { --main-dark: #0f172a; --accent: #ff6600; }
+    body { background-color: var(--bs-body-bg); font-family: system-ui, -apple-system, sans-serif; padding-bottom: 75px; }
+
+    .app-header { background-color: var(--main-dark); color: #fff; border-bottom: 2px solid var(--accent); }
+    .brand-logo { font-weight: 900; font-size: 1.3rem; color: #fff; text-decoration: none; }
+    .brand-logo span { color: var(--accent); }
+
+    .feature-card { border: 1px solid var(--bs-border-color); border-radius: 10px; background: var(--bs-card-bg); transition: transform 0.2s; }
+    .feature-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+    .mobile-bottom-nav { position: fixed; bottom: 0; right: 0; left: 0; background: var(--bs-body-bg); border-top: 1px solid var(--bs-border-color); z-index: 1040; display: flex; justify-content: space-around; padding: 8px 0; }
+    .mobile-nav-btn { border: none; background: none; color: #64748b; font-size: 0.7rem; display: flex; flex-direction: column; align-items: center; }
+    .mobile-nav-btn.active { color: var(--accent); font-weight: bold; }
+
+    /* LTR Support adjustments */
+    body.ltr { direction: ltr; text-align: left; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. الهيدر الرئيسي مع التحكم باللغات والثيم -->
+  <header class="app-header py-2 px-3 sticky-top shadow-sm">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <a href="#" class="brand-logo" onclick="switchPage('home')">
+        <i class="fa-solid fa-earth-americas text-warning me-1"></i> GlobalTrade <span>PRO</span>
+      </a>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- محول اللغات Multi-Language Selector -->
+        <select class="form-select form-select-sm bg-dark text-white border-secondary" id="langSelect" onchange="changeLanguage(this.value)">
+          <option value="ar">العربية 🇸🇦</option>
+          <option value="en">English 🇺🇸</option>
+          <option value="zh">中文 (Chinese) 🇨🇳</option>
+        </select>
+
+        <button class="btn btn-sm btn-outline-light" onclick="toggleTheme()" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+        <button class="btn btn-sm btn-warning fw-bold" onclick="switchPage('matrix')"><i class="fa-solid fa-cubes me-1"></i> <span data-i18n="features">مصفوفة الـ 2000 ميزة</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid my-3">
+    <div class="row">
+
+      <!-- 2. القائمة الجانبية للشاشات الكبيرة -->
+      <div class="col-lg-2 col-md-3 d-none d-md-block">
+        <div class="card border-0 shadow-sm p-2 sticky-top" style="top: 80px;">
+          <div class="text-muted small fw-bold px-3 my-2" data-i18n="nav_title">منظومات النظام</div>
+          <div class="nav flex-column nav-pills">
+            <button class="nav-link active" onclick="switchPage('home')"><i class="fa-solid fa-store me-2"></i><span data-i18n="nav_market">سوق الجملة</span></button>
+            <button class="nav-link" onclick="switchPage('matrix')"><i class="fa-solid fa-cubes me-2"></i><span data-i18n="nav_matrix">الميزات والأنظمة</span></button>
+            <button class="nav-link" onclick="switchPage('cbm')"><i class="fa-solid fa-calculator me-2"></i><span data-i18n="nav_cbm">حاسبة CBM والأوزان</span></button>
+            <button class="nav-link" onclick="switchPage('crm')"><i class="fa-solid fa-diagram-project me-2"></i><span data-i18n="nav_crm">إدارة الصفقات CRM</span></button>
+            <button class="nav-link" onclick="switchPage('hscode')"><i class="fa-solid fa-book me-2"></i><span data-i18n="nav_hs">دليل التعرفة HS Code</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. مساحة عرض الشاشات والأنظمة -->
+      <div class="col-lg-10 col-md-9">
+
+        <!-- أ. سوق الجملة والمنتجات -->
+        <div id="page-home" class="page-content">
+          <div class="card border-0 shadow-sm p-3 mb-3">
+            <div class="row g-2">
+              <div class="col-md-8">
+                <input type="text" class="form-control" id="searchInput" placeholder="ابحث بين آلاف المنتجات والموردين..." data-i18n-ph="search_ph">
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-warning w-100 fw-bold" data-i18n="search_btn"><i class="fa-solid fa-magnifying-glass me-1"></i> بحث شامل</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" id="productsGrid">
+            <!-- تحميل المنتجات عبر JavaScript -->
+          </div>
+        </div>
+
+        <!-- ب. مصفوفة الـ 2000 ميزة والأنظمة المدمجة -->
+        <div id="page-matrix" class="page-content d-none">
+          <div class="card border-0 shadow-sm p-4">
+            <h4 class="fw-bold text-primary mb-2" data-i18n="matrix_head"><i class="fa-solid fa-network-wired me-2"></i>مصفوفة المحرك التجاري (2000+ Enterprise Features)</h4>
+            <p class="text-muted small" data-i18n="matrix_sub">تم دمج وهيكلة كافة أدوات التجارة والتصدير واللوجستيات في محرك واحد متكامل.</p>
+            <hr>
+
+            <div class="row g-3" id="modulesContainer">
+              <!-- يتم توليد الوحدات والأنظمة هنا dynamic -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ج. حاسبة الشحن والحجم CBM Calculator -->
+        <div id="page-cbm" class="page-content d-none">
+          <div class="card border-0 shadow-sm p-4">
+            <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-boxes-stacked text-warning me-2"></i>حاسبة حجم الشحنة والحاويات (CBM & Container Calculator)</h5>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">الطول (سم)</label>
+                <input type="number" id="cbmL" class="form-control" placeholder="100">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">العرض (سم)</label>
+                <input type="number" id="cbmW" class="form-control" placeholder="100">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">الارتفاع (سم)</label>
+                <input type="number" id="cbmH" class="form-control" placeholder="100">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">عدد الكراتين</label>
+                <input type="number" id="cbmQty" class="form-control" placeholder="50">
+              </div>
+              <div class="col-12 text-center my-2">
+                <button class="btn btn-primary px-5 fw-bold" onclick="calculateCBM()"><i class="fa-solid fa-calculator me-1"></i> احسب الحجم وعدد الحاويات</button>
+              </div>
+            </div>
+            <div id="cbmResult" class="alert alert-success mt-3 d-none text-center fw-bold"></div>
+          </div>
+        </div>
+
+        <!-- د. إدارة العلاقات والصفقات CRM Pipeline -->
+        <div id="page-crm" class="page-content d-none">
+          <div class="card border-0 shadow-sm p-4">
+            <h5 class="fw-bold text-primary mb-3"><i class="fa-solid fa-diagram-project me-2"></i>تتبع مسار الصفقات (B2B Sales Pipeline)</h5>
+            <div class="row g-2 text-center">
+              <div class="col-md-3">
+                <div class="p-2 bg-light border rounded">
+                  <span class="badge bg-secondary mb-2">استفسار جديد (5)</span>
+                  <div class="p-2 bg-white border rounded mb-1 small text-start">شحنة زيت طعام - 20 طن</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="p-2 bg-light border rounded">
+                  <span class="badge bg-warning text-dark mb-2">قيد التفاوض (3)</span>
+                  <div class="p-2 bg-white border rounded mb-1 small text-start">خط إنتاج تعبئة - مصنع جدة</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="p-2 bg-light border rounded">
+                  <span class="badge bg-info mb-2">إيداع الضمان Escrow (2)</span>
+                  <div class="p-2 bg-white border rounded mb-1 small text-start">عقد فحم نباتي - #CTR-990</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="p-2 bg-light border rounded">
+                  <span class="badge bg-success mb-2">تم الشحن والتسليم (12)</span>
+                  <div class="p-2 bg-white border rounded mb-1 small text-start">حاوية 40 قدم - ميناء جبل علي</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- هـ. دليل الرموز الجمركية HS Code Lookup -->
+        <div id="page-hscode" class="page-content d-none">
+          <div class="card border-0 shadow-sm p-4">
+            <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-book text-success me-2"></i>مستكشف التعرفة والرموز الجمركية (HS Code Database)</h5>
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="ابحث باسم السلعة للحصول على الرمز الجمركي والضرائب...">
+              <button class="btn btn-success"><i class="fa-solid fa-search"></i> بحث</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle small">
+                <thead class="table-dark">
+                  <tr>
+                    <th>رمز HS Code</th>
+                    <th>وصف السلعة</th>
+                    <th>نسبة الجمرك التقديرية</th>
+                    <th>شهادات المطابقة المطلوبة</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>1509.10</code></td>
+                    <td>زيت زيتون بكر ممتاز</td>
+                    <td>5%</td>
+                    <td>شهادة صحية + شهادة المنشأ ISO</td>
+                  </tr>
+                  <tr>
+                    <td><code>8422.30</code></td>
+                    <td>آلات ومعدات للتعبئة والتغليف</td>
+                    <td>0% (معفاة للصناعة)</td>
+                    <td>شهادة المطابقة CE / SASO</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. شريط التنقل السفلي للهواتف -->
+  <div class="mobile-bottom-nav d-md-none">
+    <button class="mobile-nav-btn active" onclick="switchPage('home')">
+      <i class="fa-solid fa-store"></i>
+      <span>السوق</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchPage('matrix')">
+      <i class="fa-solid fa-cubes"></i>
+      <span>الميزات</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchPage('cbm')">
+      <i class="fa-solid fa-calculator"></i>
+      <span>CBM</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="switchPage('crm')">
+      <i class="fa-solid fa-diagram-project"></i>
+      <span>الصفقات</span>
+    </button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // 1. قاموس الترجمة الفورية (Multi-Language Dictionary)
+    const translations = {
+      ar: {
+        features: "مصفوفة الـ 2000 ميزة",
+        nav_title: "منظومات النظام",
+        nav_market: "سوق الجملة",
+        nav_matrix: "الميزات والأنظمة",
+        nav_cbm: "حاسبة CBM والأوزان",
+        nav_crm: "إدارة الصفقات CRM",
+        nav_hs: "دليل التعرفة HS Code",
+        search_ph: "ابحث بين آلاف المنتجات والموردين...",
+        search_btn: "بحث شامل",
+        matrix_head: "مصفوفة المحرك التجاري (2000+ Enterprise Features)",
+        matrix_sub: "تم دمج وهيكلة كافة أدوات التجارة والتصدير واللوجستيات في محرك واحد متكامل."
+      },
+      en: {
+        features: "2000+ Features Matrix",
+        nav_title: "System Modules",
+        nav_market: "Wholesale Market",
+        nav_matrix: "Features & Modules",
+        nav_cbm: "CBM Calculator",
+        nav_crm: "CRM Deals Pipeline",
+        nav_hs: "HS Code Tariff Guide",
+        search_ph: "Search thousands of products & suppliers...",
+        search_btn: "Search All",
+        matrix_head: "Enterprise Trade Architecture (2000+ Features)",
+        matrix_sub: "All B2B trade, export, and logistics tools integrated into one single engine."
+      },
+      zh: {
+        features: "2000+ 功能矩阵",
+        nav_title: "系统模块",
+        nav_market: "批发市场",
+        nav_matrix: "功能与模块",
+        nav_cbm: "CBM 体积计算器",
+        nav_crm: "CRM 交易管道",
+        nav_hs: "HS 海关编码指南",
+        search_ph: "搜索数千种产品和供应商...",
+        search_btn: "全面搜索",
+        matrix_head: "B2B 贸易企业架构 (2000+ 功能)",
+        matrix_sub: "所有全球贸易、出口和物流工具集成为一个统一引擎。"
+      }
+    };
+
+    // 2. قائمة المنظومات والأنظمة الفرعية (Representing 2000+ Features)
+    const systemModules = [
+      { id: 1, name_ar: "منظومة اللوجستيات والموانئ (Logistics Subsystem)", count: 320, icon: "fa-ship", desc: "تتبع السفن، حجز الحاويات، حساب أرضيات الموانئ، إدارة بوليصة الشحن." },
+      { id: 2, name_ar: "منظومة التمويل والضمان Escrow & FinTech", count: 280, icon: "fa-vault", desc: "الدفع المحمي، الخطابات المستندية LC، التمويل الآجل BNPL، تحويل العملات." },
+      { id: 3, name_ar: "منظومة الفحص والمطابقة SGS & Quality", count: 210, icon: "fa-clipboard-check", desc: "حجز شركات التفتيش، شهادات المطابقة، فحص العينات، معايير ISO." },
+      { id: 4, name_ar: "منظومة الامتثال والتعرفة HS Code Tariff", count: 250, icon: "fa-scale-balanced", desc: "قواعد البيانات الجمركية، حساب الاتفاقيات التجارية، حساب الضرائب." },
+      { id: 5, name_ar: "منظومة إدارة المبيعات CRM & Pipeline", count: 340, icon: "fa-diagram-project", desc: "تتبع الصفقات، إدارة الموردين، التفاوض الآلي، الفواتير المبدئية." },
+      { id: 6, name_ar: "منظومة الذكاء الاصطناعي والتسعير AI Engine", count: 200, icon: "fa-brain", desc: "التنبؤ بأسعار السوق، التسعير التكيفي، المترجم الفوري للمحادثات." },
+      { id: 7, name_ar: "منظومة المخازن والتوزيع Multi-Warehouse ERP", count: 220, icon: "fa-warehouse", desc: "تتبع المخزون، إدارة الفروع، تنبيهات حد الطلب، التوجيه الذكي." },
+      { id: 8, name_ar: "منظومة الأمن والصلاحيات Security & Audit", count: 180, icon: "fa-user-shield", desc: "التوقيع الرقمي المشفر، سجل النشاطات، توزيع صلاحيات المشرفين." }
+    ];
+
+    let currentProducts = [
+      { name: "شحنة زيت زيتون بكر ممتاز للتصدير", cat: "مواد غذائية", price: "$2.80 / liter", img: "https://via.placeholder.com/250" },
+      { name: "خط تعبئة وتغليف آلي للمصانع", cat: "آلات ومعدات", price: "$22,000 / unit", img: "https://via.placeholder.com/250" }
+    ];
+
+    // 3. محرك تغيير اللغات
+    function changeLanguage(lang) {
+      const body = document.body;
+      const cssLink = document.getElementById('bootstrap-css');
+
+      if (lang === 'ar') {
+        body.classList.remove('ltr');
+        body.setAttribute('dir', 'rtl');
+        cssLink.href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css";
+      } else {
+        body.classList.add('ltr');
+        body.setAttribute('dir', 'ltr');
+        cssLink.href = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css";
+      }
+
+      // ترجمة النصوص المعلمة بـ data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+
+      // ترجمة الـ Placeholders
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (translations[lang] && translations[lang][key]) {
+          el.placeholder = translations[lang][key];
+        }
+      });
+    }
+
+    // 4. التنقل بين الصفحات
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-content').forEach(el => el.classList.add('d-none'));
+      document.getElementById(`page-${pageId}`).classList.remove('d-none');
+    }
+
+    // 5. بناء كروت الأنظمة والـ 2000 ميزة
+    function renderModules() {
+      const container = document.getElementById('modulesContainer');
+      container.innerHTML = '';
+      systemModules.forEach(m => {
+        container.innerHTML += `
+          <div class="col-md-6 col-lg-3">
+            <div class="feature-card p-3 h-100">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="fa-solid ${m.icon} fs-3 text-warning"></i>
+                <h6 class="fw-bold mb-0">${m.name_ar}</h6>
+              </div>
+              <p class="small text-muted mb-2">${m.desc}</p>
+              <span class="badge bg-primary">${m.count} ميزة مدمجة</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // 6. حساب CBM الشحنات
+    function calculateCBM() {
+      const l = document.getElementById('cbmL').value || 0;
+      const w = document.getElementById('cbmW').value || 0;
+      const h = document.getElementById('cbmH').value || 0;
+      const qty = document.getElementById('cbmQty').value || 1;
+
+      const totalCBM = ((l * w * h) / 1000000) * qty;
+      const res = document.getElementById('cbmResult');
+      res.classList.remove('d-none');
+
+      let cnt20 = (totalCBM / 33).toFixed(1);
+      res.innerHTML = `إجمالي الحجم: <strong>${totalCBM.toFixed(2)} CBM</strong> | يتطلب تقريباً: <strong>${cnt20} حاوية (20ft)</strong>`;
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+      currentProducts.forEach(p => {
+        grid.innerHTML += `
+          <div class="col-md-4 col-sm-6 mb-3">
+            <div class="feature-card p-3 h-100 d-flex flex-column">
+              <span class="badge bg-secondary mb-2 align-self-start">${p.cat}</span>
+              <img src="${p.img}" class="rounded mb-2" style="height:150px; object-fit:contain;">
+              <h6 class="fw-bold">${p.name}</h6>
+              <div class="fw-bold text-success mb-2">${p.price}</div>
+              <button class="btn btn-warning btn-sm mt-auto fw-bold" onclick="switchPage('crm')">تفاوض وابدأ صفقة</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-bs-theme', next);
+    }
+
+    // التشغيل المبدئي
+    renderModules();
+    renderProducts();
+  </script>
+</body>
+</html>
